@@ -1,2 +1,0 @@
-# baucua
-#By Quoc Viet
