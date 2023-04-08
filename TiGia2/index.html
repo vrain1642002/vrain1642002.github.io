@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Tỷ giá hối đoái Vietcombank</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vietcombank Exchange Rates</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h1>Tỷ giá hối đoái Vietcombank</h1>
+    <h1>Vietcombank Exchange Rates</h1>
     <table>
-      <thead>
-        <tr>
-          <th>Tên ngoại tệ</th>
-          <th>Mua vào</th>
-          <th>Chuyển khoản</th>
-          <th>Bán ra</th>
-        </tr>
-      </thead>
+      <tr>
+        <th>Currency</th>
+        <th>Buy Cash</th>
+        <th>Buy Transfer</th>
+        <th>Sell</th>
+      </tr>
       <tbody id="exchange-rates">
       </tbody>
     </table>
+    <p id="last-updated"></p>
     <script src="script.js"></script>
   </body>
 </html>

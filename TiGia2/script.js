@@ -1,41 +1,45 @@
-function getExchangeRates() {
-  // Make a request to the API
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://www.vietcombank.com.vn/exchangerates/ExrateXML.aspx', true);
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      // Parse the response as XML
-      var parser = new DOMParser();
-      var xml = parser.parseFromString(xhr.responseText, 'text/xml');
-      // Update the exchange rates on the page
-      updateExchangeRates(xml);
-    }
-  };
-  xhr.send();
+const exchangeRatesEl = document.getElementById('exchange-rates');
+const lastUpdatedEl = document.getElementById('last-updated');
+
+function displayExchangeRates(data) {
+  // Clear previous data
+  exchangeRatesEl.innerHTML = '';
+
+  // Display each currency
+  data.forEach(currency => {
+    const row = document.createElement('tr');
+    const nameCell = document.createElement('td');
+    const buyCashCell = document.createElement('td');
+    const buyTransferCell = document.createElement('td');
+    const sellCell = document.createElement('td');
+    nameCell.textContent = currency.currencyCode;
+    buyCashCell.textContent = currency.buyCash;
+    buyTransferCell.textContent = currency.buyTransfer;
+    sellCell.textContent = currency.sell;
+    row.appendChild(nameCell);
+    row.appendChild(buyCashCell);
+    row.appendChild(buyTransferCell);
+    row.appendChild(sellCell);
+    exchangeRatesEl.appendChild(row);
+  });
 }
 
-function updateExchangeRates(xml) {
-  var tbody = document.getElementById('exchange-rates');
-  tbody.innerHTML = '';
-  var currencies = xml.getElementsByTagName('Exrate');
-  for (var i = 0; i < currencies.length; i++) {
-    var currency = currencies[i];
-    var name = currency.getAttribute('CurrencyName');
-    var buy = currency.getAttribute('Buy');
-    var transfer = currency.getAttribute('Transfer');
-    var sell = currency.getAttribute('Sell');
-    var row = '<tr>';
-    row += '<td>' + name + '</td>';
-    row += '<td>' + buy + '</td>';
-    row += '<td>' + transfer + '</td>';
-    row += '<td>' + sell + '</td>';
-    row += '</tr>';
-    tbody.innerHTML += row;
-  }
+function displayLastUpdated(data) {
+  const timestamp = new Date(data.createDate);
+  lastUpdatedEl.textContent = `Last updated: ${timestamp.toLocaleString()}`;
 }
 
-// Call getExchangeRates() immediately to update the exchange rates on page load
-getExchangeRates();
+function fetchExchangeRates() {
+  const url = 'https://your-proxy-server-url.com/vietcombank-exchange-rates';
 
-// Call getExchangeRates() every hour to update the exchange rates
-setInterval(getExchangeRates, 3600000); // 1 hour = 3600000 milliseconds
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      displayExchangeRates(data.exchangeRates);
+      displayLastUpdated(data);
+    })
+    .catch(error => console.error(error));
+}
+
+// Fetch exchange rates on page load
+fetchExchangeRates();
