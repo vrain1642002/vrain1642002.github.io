@@ -117,9 +117,10 @@ $(document).ready(function () {
       html: "<input type='text' class='form-control' id='txtReason'  placeholder='Em nhập thử đi'>",
       background: '#fff url("img/iput-bg.jpg")',
       backdrop: `
+                  
                     rgba(0,0,123,0.4)
                     url("img/gif.gif")
-                    left top
+                    center bottom
                     no-repeat
                   `,
       showCancelButton: false,
