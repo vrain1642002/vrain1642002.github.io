@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let microphone;
   let soundCount = 0; 
   let allCandlesLit = false; 
+  let soundDetectionEnabled = false; // Thêm biến để điều khiển phát hiện âm thanh
 
   function updateCandleCount() {
     const activeCandles = candles.filter(
@@ -57,13 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let average = sum / bufferLength;
 
-    return allCandlesLit && average > 40; 
+    return allCandlesLit && average > 30; // Sửa ngưỡng âm thanh thành 20
   }
 
   function blowOutCandles() {
     let blownOut = 0;
 
-    if (isBlowing()) {
+    if (soundDetectionEnabled && isBlowing()) { // Chỉ kiểm tra âm thanh nếu phát hiện được bật
       soundCount++; 
 
       if (soundCount >= 2) {
@@ -75,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         soundCount = 0; 
-        updateCandleCount(); 
       }
     } else {
       soundCount = 0; 
@@ -94,16 +94,17 @@ document.addEventListener("DOMContentLoaded", function () {
         setInterval(blowOutCandles, 200); 
       })
       .catch(function (err) {
-        console.log("Unable to access microphone: " + err);
+        console.log("Không thể truy cập microphone: " + err); // Thông báo khi không thể truy cập microphone
       });
   } else {
-    console.log("getUserMedia not supported on your browser!");
+    console.log("getUserMedia không được hỗ trợ trên trình duyệt của bạn!"); // Thông báo khi không hỗ trợ getUserMedia
   }
 
-  const audio = new Audio('backgroundMusic.mp3');
+  const audio = new Audio('song.mp3');
   audio.addEventListener("ended", function() {
     setTimeout(function() {
       if (audio.currentTime >= 44) {
+        enableSoundDetection(); // Kích hoạt phát hiện âm thanh khi nhạc kết thúc
         blowOutCandles(); 
       }
     }, 0); 
@@ -112,6 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
   function playAudio() {
     audio.play();
     allCandlesLit = true;
+  }
+
+  function enableSoundDetection() {
+    soundDetectionEnabled = true;
+  }
+
+  function disableSoundDetection() {
+    soundDetectionEnabled = false;
   }
 
   cake.addEventListener("click", function () {
