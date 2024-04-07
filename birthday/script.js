@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let average = sum / bufferLength;
 
-    return allCandlesLit && average > 70; 
+    return allCandlesLit && average > 50; 
   }
 
   function blowOutCandles() {
