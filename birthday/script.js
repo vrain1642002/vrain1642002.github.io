@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let average = sum / bufferLength;
 
-    return allCandlesLit && average > 25; // Sửa ngưỡng âm thanh thành 20
+    return allCandlesLit && average > 30; // Sửa ngưỡng âm thanh thành 20
   }
 
   function blowOutCandles() {
