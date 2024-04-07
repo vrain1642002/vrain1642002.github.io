@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const audio = document.getElementById("backgroundMusic");
   const cake = document.querySelector(".cake");
   const candleCountDisplay = document.getElementById("candleCount");
   let candles = [];
@@ -8,8 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
   let microphone;
   let soundCount = 0; 
   let allCandlesLit = false; 
-  let isFirstBlow = true; 
-  let musicPlayed = false; 
 
   function updateCandleCount() {
     const activeCandles = candles.filter(
@@ -37,10 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
     candles.push(candle);
     updateCandleCount();
 
-    if (candles.length === 19 && !musicPlayed) {
-      allCandlesLit = true;
-      audio.play(); 
-      musicPlayed = true; 
+    if (candles.length === 19) {
+      allCandlesLit = true; 
     }
   }
 
@@ -52,8 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function isBlowing() {
-    if (!allCandlesLit) return false; 
-
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     analyser.getByteFrequencyData(dataArray);
@@ -64,33 +57,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let average = sum / bufferLength;
 
-    return average > 30; 
+    return allCandlesLit && average > 70; 
   }
 
   function blowOutCandles() {
+    let blownOut = 0;
+
     if (isBlowing()) {
-      if (isFirstBlow) {
-        isFirstBlow = false; 
-      } else if (soundCount > 1) { 
+      soundCount++; 
+
+      if (soundCount >= 2) {
         candles.forEach((candle) => {
           if (!candle.classList.contains("out")) {
             candle.classList.add("out");
+            blownOut++;
           }
         });
+
+        soundCount = 0; 
+        updateCandleCount(); 
       }
-      soundCount++; 
+    } else {
+      soundCount = 0; 
     }
   }
-
-  audio.addEventListener("timeupdate", function() {
-    if (audio.currentTime >= 44) {
-      audio.pause(); 
-    }
-  });
-
-  audio.addEventListener("ended", function() {
-    blowOutCandles(); 
-  });
 
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
@@ -101,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
         microphone = audioContext.createMediaStreamSource(stream);
         microphone.connect(analyser);
         analyser.fftSize = 256;
+        setInterval(blowOutCandles, 200); 
       })
       .catch(function (err) {
         console.log("Unable to access microphone: " + err);
@@ -109,7 +100,23 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("getUserMedia not supported on your browser!");
   }
 
-  audio.onplay = function() {
-    musicPlayed = true;
-  };
+  const audio = new Audio('backgroundMusic.mp3');
+  audio.addEventListener("ended", function() {
+    setTimeout(function() {
+      if (audio.currentTime >= 44) {
+        blowOutCandles(); 
+      }
+    }, 0); 
+  });
+  
+  function playAudio() {
+    audio.play();
+    allCandlesLit = true;
+  }
+
+  cake.addEventListener("click", function () {
+    if (!allCandlesLit) {
+      playAudio();
+    }
+  });
 });
