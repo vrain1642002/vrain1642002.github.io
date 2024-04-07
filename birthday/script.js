@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let soundCount = 0; 
   let allCandlesLit = false; 
   let isFirstBlow = true; 
-  let musicPlayed = false; // Biến để kiểm tra xem nhạc đã được phát chưa
+  let musicPlayed = false; 
 
   function updateCandleCount() {
     const activeCandles = candles.filter(
@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (candles.length === 19 && !musicPlayed) {
       allCandlesLit = true;
-      audio.play(); // Phát nhạc khi đã cắm đủ 19 cây nến
-      musicPlayed = true; // Đánh dấu rằng nhạc đã được phát
+      audio.play(); 
+      musicPlayed = true; 
     }
   }
 
@@ -71,7 +71,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isBlowing()) {
       if (isFirstBlow) {
         isFirstBlow = false; 
-       
       } else if (soundCount > 1) { 
         candles.forEach((candle) => {
           if (!candle.classList.contains("out")) {
@@ -83,17 +82,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Tạm dừng nhạc khi đến giây thứ 44
   audio.addEventListener("timeupdate", function() {
     if (audio.currentTime >= 44) {
-      audio.pause(); // Tạm dừng nhạc
+      audio.pause(); 
     }
   });
 
   audio.addEventListener("ended", function() {
-    setTimeout(function() {
-        blowOutCandles(); // Gọi hàm kiểm tra tiếng động sau 4 giây
-    }, 4000); // 4 giây = 4000 mili giây
+    blowOutCandles(); 
   });
 
   if (navigator.mediaDevices.getUserMedia) {
@@ -113,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("getUserMedia not supported on your browser!");
   }
 
-  // Phát nhạc khi nhấn nút cắm nến
   audio.onplay = function() {
     musicPlayed = true;
   };
