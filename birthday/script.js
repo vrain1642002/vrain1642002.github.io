@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const audio = document.getElementById("backgroundMusic");
   const cake = document.querySelector(".cake");
   const candleCountDisplay = document.getElementById("candleCount");
-  const blowMessage = document.getElementById("blowMessage");
   let candles = [];
   let audioContext;
   let analyser;
@@ -65,21 +64,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     let average = sum / bufferLength;
 
-    return average > 50; 
+    return average > 30; 
   }
 
   function blowOutCandles() {
     if (isBlowing()) {
       if (isFirstBlow) {
         isFirstBlow = false; 
-        blowMessage.textContent = "Thổi mạnh lên nào bé!";
+       
       } else if (soundCount > 1) { 
         candles.forEach((candle) => {
           if (!candle.classList.contains("out")) {
             candle.classList.add("out");
           }
         });
-        blowMessage.textContent = "Bé đã 19 tuổi kkk!";
       }
       soundCount++; 
     }
